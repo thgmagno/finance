@@ -1,12 +1,7 @@
-import { Button } from '@/components/ui/button'
-
-export default function Home() {
+export default function IndexPage() {
   return (
     <main>
-      <h1>Finance</h1>
-      <div>
-        <Button>Click me</Button>
-      </div>
+      <h1>IndexPage</h1>
     </main>
   )
 }

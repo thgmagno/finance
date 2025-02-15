@@ -1,4 +1,4 @@
-import { Home, Search, Settings, Users, Wallet } from 'lucide-react'
+import { Home, LifeBuoy, Settings, Users, Wallet } from 'lucide-react'
 
 import {
   Sidebar,
@@ -29,9 +29,9 @@ const items = [
     icon: Users,
   },
   {
-    title: 'Pesquisar',
-    url: '/pesquisar',
-    icon: Search,
+    title: 'Suporte',
+    url: '/suporte',
+    icon: LifeBuoy,
   },
   {
     title: 'Configurações',

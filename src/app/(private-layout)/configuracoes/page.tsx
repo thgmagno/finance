@@ -1,5 +1,7 @@
-import { ModeToggle } from '@/components/ModeToggle'
-
-export default function Configuracoes() {
-  return <ModeToggle />
+export default function SettingsPage() {
+  return (
+    <main>
+      <h1>SettingsPage</h1>
+    </main>
+  )
 }
