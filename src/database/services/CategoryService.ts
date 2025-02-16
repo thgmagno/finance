@@ -1,5 +1,5 @@
-import { CategoryDTO } from '../dtos/CategoryDTO'
-import { ICategoryService } from './ICategoryService'
+import { CategoryDTO } from '@/database/dtos/CategoryDTO'
+import { ICategoryService } from '@/database/interfaces/ICategoryService'
 
 export class CategoryService implements ICategoryService {
   private categories: CategoryDTO[] = []

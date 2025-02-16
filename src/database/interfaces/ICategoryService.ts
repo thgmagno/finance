@@ -1,4 +1,4 @@
-import { CategoryDTO } from '../dtos/CategoryDTO'
+import { CategoryDTO } from '@/database/dtos/CategoryDTO'
 
 export interface ICategoryService {
   create(category: CategoryDTO): void

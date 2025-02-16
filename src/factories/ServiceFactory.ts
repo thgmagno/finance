@@ -1,5 +1,5 @@
 import { CategoryService } from '@/database/services/CategoryService'
-import { ICategoryService } from '@/database/services/ICategoryService'
+import { ICategoryService } from '@/database/interfaces/ICategoryService'
 
 class ServiceFactory {
   private static categoryService: ICategoryService

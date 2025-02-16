@@ -1,8 +1,10 @@
+import { CategoryType } from '../enums/categories'
+
 export class CategoryDTO {
   constructor(
     private readonly id: string,
     private readonly name: string,
-    private readonly type: string,
+    private readonly type: CategoryType,
   ) {}
 
   getId(): string {
@@ -13,7 +15,7 @@ export class CategoryDTO {
     return this.name
   }
 
-  getType(): string {
+  getType(): CategoryType {
     return this.type
   }
 }

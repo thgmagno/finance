@@ -1,4 +1,4 @@
-import { CategoryService } from './CategoryService'
+import { CategoryService } from '@/database/services/CategoryService'
 
 export const service = {
   Categories: {
@@ -18,6 +18,6 @@ export const service = {
   },
   Users: {
     Feedback: {},
-    Users: {},
+    User: {},
   },
 }
