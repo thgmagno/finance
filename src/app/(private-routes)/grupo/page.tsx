@@ -1,7 +1,9 @@
+import { Page } from '@/components/common/Page'
+
 export default function GroupPage() {
   return (
-    <main>
-      <h1>GroupPage</h1>
-    </main>
+    <Page title="Groupo">
+      <></>
+    </Page>
   )
 }

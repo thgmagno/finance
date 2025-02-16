@@ -1,7 +1,12 @@
-export default function SettingsPage() {
+import { Page } from '@/components/common/Page'
+import { UserInfo } from '@/components/common/UserInfo'
+import { ModeSelect } from '@/components/ModeToggle'
+
+export default async function SettingsPage() {
   return (
-    <main>
-      <h1>SettingsPage</h1>
-    </main>
+    <Page title="Configurações">
+      <ModeSelect />
+      <UserInfo />
+    </Page>
   )
 }

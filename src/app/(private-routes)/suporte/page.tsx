@@ -1,7 +1,9 @@
+import { Page } from '@/components/common/Page'
+
 export default function SupportPage() {
   return (
-    <main>
-      <h1>SupportPage</h1>
-    </main>
+    <Page title="Suporte">
+      <></>
+    </Page>
   )
 }

@@ -11,6 +11,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 export function ModeToggle() {
   const { setTheme } = useTheme()
@@ -26,15 +34,39 @@ export function ModeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light
+          Claro
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Dark
+          Escuro
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
-          System
+          Sistema
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function ModeSelect() {
+  const { setTheme, theme } = useTheme()
+
+  const handleThemeChange = (value: string) => {
+    setTheme(value)
+  }
+
+  return (
+    <div className="flex flex-col space-y-1.5">
+      <Label htmlFor="tema">Tema</Label>
+      <Select onValueChange={handleThemeChange} defaultValue={theme}>
+        <SelectTrigger className="max-w-[350px]">
+          <SelectValue placeholder="Theme" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="light">Claro</SelectItem>
+          <SelectItem value="dark">Escuro</SelectItem>
+          <SelectItem value="system">Sistema</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   )
 }

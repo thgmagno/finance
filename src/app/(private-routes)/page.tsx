@@ -1,7 +1,12 @@
-export default function IndexPage() {
+import { auth } from '@/auth'
+import { Page } from '@/components/common/Page'
+
+export default async function IndexPage() {
+  const user = await auth().then((session) => session?.user)
+
   return (
-    <main>
-      <h1>IndexPage</h1>
-    </main>
+    <Page title={`Bem-vindo ${user?.name?.split(' ').shift() ?? ''}`.trim()}>
+      <></>
+    </Page>
   )
 }

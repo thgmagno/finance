@@ -9,10 +9,10 @@ export default function PrivateLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
+      <div className="w-full">
         <SidebarTrigger />
-        {children}
-      </main>
+        <section className="mb-32 p-5">{children}</section>
+      </div>
     </SidebarProvider>
   )
 }
