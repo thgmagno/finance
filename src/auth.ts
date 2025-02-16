@@ -12,4 +12,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
   secret: env.AUTH_SECRET,
+  pages: {
+    signIn: '/entrar',
+  },
 })

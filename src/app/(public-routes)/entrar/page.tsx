@@ -1,25 +1,26 @@
-import { signIn } from '@/auth'
+import { SignInWithGitHub } from '@/components/common/SignInWithGitHub'
+import { SignInWithGoogle } from '@/components/common/SignInWithGoogle'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 export default function LoginPage() {
   return (
-    <main>
-      <h1>LoginPage</h1>
-      <form
-        action={async () => {
-          'use server'
-          await signIn('google')
-        }}
-      >
-        <button type="submit">Signin with Google</button>
-      </form>
-      <form
-        action={async () => {
-          'use server'
-          await signIn('github')
-        }}
-      >
-        <button type="submit">Signin with GitHub</button>
-      </form>
-    </main>
+    <Card className="mx-auto my-8 max-w-md py-6">
+      <CardHeader>
+        <CardTitle>Autenticação</CardTitle>
+        <CardDescription>
+          Para continuar escolha uma das opções abaixo
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col space-y-5">
+        <SignInWithGoogle />
+        <SignInWithGitHub />
+      </CardContent>
+    </Card>
   )
 }

@@ -1,6 +1,6 @@
 import { prisma } from '@/database/prisma'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { signOut as endSession } from '@/auth'
 import { handleDatabaseOperation } from '@/database/helper'
 
 export async function deactivateAccount(userId: string) {
@@ -19,13 +19,10 @@ export async function deactivateAccount(userId: string) {
   }, 'Conta desativada com sucesso')
 }
 
-export async function signOut(userId: string) {
+export async function signOut() {
   return handleDatabaseOperation(async () => {
-    await prisma.session.deleteMany({ where: { userId } })
-
     const cookieStore = await cookies()
     cookieStore.delete('authjs.session-token')
-
-    redirect('/entrar')
+    return endSession({ redirect: true, redirectTo: '/entrar' })
   }, 'Desconectado com sucesso')
 }

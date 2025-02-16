@@ -28,9 +28,10 @@ export default async function RootLayout({
   const session = await auth()
 
   return (
-    <html lang="en">
+    <html lang="pt-br">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
         <SessionProvider session={session}>
           <Providers

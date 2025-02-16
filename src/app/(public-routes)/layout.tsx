@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import { PublicNavbar } from '@/components/common/PublicNavbar'
 import { ModeToggle } from '@/components/ModeToggle'
 import { redirect } from 'next/navigation'
 
@@ -14,9 +15,13 @@ export default async function PublicLayout({
   }
 
   return (
-    <section className="mb-32 p-5">
-      <ModeToggle />
-      {children}
+    <section className="mb-32">
+      <div className="flex items-center justify-between border-b-2 border-accent bg-accent/40 p-5 backdrop-blur-md">
+        <span className="text-lg font-bold text-foreground">Finance App</span>
+        <ModeToggle />
+      </div>
+      <PublicNavbar />
+      <div className="p-5">{children}</div>
     </section>
   )
 }

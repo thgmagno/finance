@@ -1,7 +1,7 @@
 import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
-export default function PrivateLayout({
+export default async function PrivateLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
