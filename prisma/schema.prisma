@@ -32,9 +32,11 @@ model User {
   joinRequests GroupJoinRequest[]
 
   // Campos adicionais
-  createdAt   DateTime      @default(now())
-  Transaction Transaction[]
-  Group       Group[]
+  createdAt    DateTime       @default(now())
+  Transaction  Transaction[]
+  Group        Group[]
+  Category     Category[]
+  Notification Notification[]
 
   @@map("users")
 }
@@ -96,19 +98,21 @@ model Authenticator {
 
 model Transaction {
   id           String          @id @default(cuid())
-  userId       String
-  categoryId   String
-  amount       Decimal
-  creationDate DateTime
-  description  String
+  userId       String?
+  groupId      String?
+  categoryId   String?
+  amount       Decimal?
+  creationDate DateTime        @default(now())
+  description  String?
   type         TransactionType
   payments     Payment[]
   receipts     Receipt[]
   reserves     Reserve[]
   deleted      Boolean         @default(false)
   deletedAt    DateTime?
-  user         User            @relation(fields: [userId], references: [id])
-  category     Category        @relation(fields: [categoryId], references: [id])
+  user         User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group        Group?          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  category     Category?       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
 }
@@ -118,8 +122,9 @@ model Payment {
   transactionId String
   dueDate       DateTime
   amountPaid    Decimal
+  status        PaymentStatus
   paymentMethod PaymentMethodType
-  transaction   Transaction       @relation(fields: [transactionId], references: [id])
+  transaction   Transaction       @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
@@ -129,19 +134,21 @@ model Receipt {
   transactionId  String
   receiptDate    DateTime
   amountReceived Decimal
+  status         ReceiptStatus
   receiptMethod  ReceiptMethodType
-  transaction    Transaction       @relation(fields: [transactionId], references: [id])
+  transaction    Transaction       @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@map("receipts")
 }
 
 model Reserve {
-  id            String      @id @default(cuid())
+  id            String        @id @default(cuid())
   transactionId String
   startDate     DateTime
   endDate       DateTime
   yield         Decimal
-  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  status        ReserveStatus
+  transaction   Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@map("reserves")
 }
@@ -150,14 +157,18 @@ model Group {
   id            String             @id @default(cuid())
   creatorUserId String
   name          String
+  tag           String             @unique
   description   String
-  creationDate  DateTime
-  creator       User               @relation(fields: [creatorUserId], references: [id])
+  creationDate  DateTime           @default(now())
+  creator       User               @relation(fields: [creatorUserId], references: [id], onDelete: Cascade)
   members       GroupMember[]
   invitations   GroupInvitation[]
   joinRequests  GroupJoinRequest[]
   deleted       Boolean            @default(false)
   deletedAt     DateTime?
+  Category      Category[]
+  visibility    VisibilityType
+  Transaction   Transaction[]
 
   @@map("groups")
 }
@@ -166,11 +177,10 @@ model GroupMember {
   id           String   @id @default(cuid())
   userId       String
   groupId      String
-  roleId       String
   additionDate DateTime
-  user         User     @relation(fields: [userId], references: [id])
-  group        Group    @relation(fields: [groupId], references: [id])
-  role         Role     @relation(fields: [roleId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group        Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  role         RoleType
 
   @@map("group_members")
 }
@@ -182,8 +192,8 @@ model GroupInvitation {
   sendDate   DateTime
   acceptDate DateTime?
   status     GroupInvitationStatus
-  group      Group                 @relation(fields: [groupId], references: [id])
-  user       User                  @relation(fields: [userId], references: [id])
+  group      Group                 @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("group_invitations")
 }
@@ -195,8 +205,8 @@ model GroupJoinRequest {
   requestDate  DateTime
   responseDate DateTime?
   status       GroupJoinRequestStatus
-  group        Group                  @relation(fields: [groupId], references: [id])
-  user         User                   @relation(fields: [userId], references: [id])
+  group        Group                  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("group_join_requests")
 }
@@ -205,7 +215,11 @@ model Category {
   id           String        @id @default(cuid())
   name         String
   type         CategoryType
+  group        Group?        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
+  groupId      String?
+  userId       String?
 
   @@map("categories")
 }
@@ -214,28 +228,25 @@ model Feedback {
   id           String         @id @default(cuid())
   userId       String
   message      String
-  creationDate DateTime
+  creationDate DateTime       @default(now())
   type         FeedbackType
   status       FeedbackStatus
-  user         User           @relation(fields: [userId], references: [id])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("feedbacks")
 }
 
-model Role {
-  id      String        @id @default(cuid())
-  name    String
-  members GroupMember[]
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("roles")
-}
-
-model SoftDelete {
-  id        String    @id @default(cuid())
-  deleted   Boolean   @default(false)
-  deletedAt DateTime?
-
-  @@map("soft_deletes")
+  @@map("notifications")
 }
 
 enum CategoryType {
@@ -264,24 +275,24 @@ enum TransactionType {
 }
 
 enum PaymentMethodType {
-  CARTAO
-  DINHEIRO
-  TRANSFERENCIA
+  CARD
+  CASH
+  TRANSFER
   PIX
   BOLETO
-  CHEQUE
-  OUTROS
+  CHECK
+  OTHER
 }
 
 enum ReceiptMethodType {
-  SALARIO
-  VENDA
+  SALARY
+  SALE
   EXTRA
   TICKET
-  INVESTIMENTO
-  DIVIDENDO
-  REEMBOLSO
-  OUTROS
+  INVESTMENT
+  DIVIDEND
+  REIMBURSEMENT
+  OTHER
 }
 
 enum FeedbackType {
@@ -293,5 +304,32 @@ enum FeedbackType {
 enum FeedbackStatus {
   UNREAD
   READ
-  RESPONDED
+}
+
+enum RoleType {
+  ADMIN
+  MEMBER
+}
+
+enum VisibilityType {
+  PUBLIC
+  PRIVATE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+enum ReceiptStatus {
+  PENDING
+  RECEIVED
+  CANCELLED
+}
+
+enum ReserveStatus {
+  PENDING
+  ACTIVE
+  REDEEMED
 }

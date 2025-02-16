@@ -23,6 +23,6 @@
       "root/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/database/services/createFiles.js", "src/database/dtos/create.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/database/services/createFiles.js", "src/database/dtos/create.js", "src/database/repositories/script.js"],
   "exclude": ["node_modules"]
 }
