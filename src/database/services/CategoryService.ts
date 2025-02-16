@@ -1,29 +1,27 @@
 import { CategoryDTO } from '@/database/dtos/CategoryDTO'
 import { ICategoryService } from '@/database/interfaces/ICategoryService'
+import { CategoryRepository } from '../repositories/CategoryRepository'
 
 export class CategoryService implements ICategoryService {
-  private categories: CategoryDTO[] = []
+  private repository = new CategoryRepository()
 
   create(category: CategoryDTO) {
-    this.categories.push(category)
+    this.repository.create(category)
   }
 
   edit(id: string, category: CategoryDTO) {
-    const index = this.categories.findIndex((c) => c.getId() === id)
-    if (index !== -1) {
-      this.categories[index] = category
-    }
+    this.repository.edit(id, category)
   }
 
   delete(id: string) {
-    this.categories = this.categories.filter((c) => c.getId() !== id)
+    this.repository.delete(id)
   }
 
   getDetails(id: string): CategoryDTO | undefined {
-    return this.categories.find((c) => c.getId() === id)
+    return this.repository.getDetails(id)
   }
 
   findAll(): CategoryDTO[] {
-    return this.categories
+    return this.repository.findAll()
   }
 }

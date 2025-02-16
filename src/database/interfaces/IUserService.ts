@@ -5,5 +5,4 @@ export interface IUserService {
   edit(id: string, user: UserDTO): void
   delete(id: string): void
   getDetails(id: string): UserDTO | undefined
-  findAll(): UserDTO[]
 }

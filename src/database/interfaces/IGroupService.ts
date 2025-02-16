@@ -5,5 +5,4 @@ export interface IGroupService {
   edit(id: string, group: GroupDTO): void
   delete(id: string): void
   getDetails(id: string): GroupDTO | undefined
-  findAll(): GroupDTO[]
 }
