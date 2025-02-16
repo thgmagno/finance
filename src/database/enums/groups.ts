@@ -1,12 +1,12 @@
 export enum GroupJoinRequestStatus {
-  PENDING,
-  APPROVED,
-  REJECTED,
+  PENDING = 'Pendente',
+  APPROVED = 'Aprovado',
+  REJECTED = 'Rejeitado',
 }
 
 export enum GroupInvitationStatus {
-  PENDING,
-  ACCEPTED,
-  REJECTED,
-  EXPIRED,
+  PENDING = 'Pendente',
+  ACCEPTED = 'Aceito',
+  REJECTED = 'Rejeitado',
+  EXPIRED = 'Expirado',
 }

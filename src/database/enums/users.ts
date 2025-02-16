@@ -1,11 +1,11 @@
 export enum FeedbackType {
-  PRAISE,
-  SUGGESTION,
-  ISSUE,
+  PRAISE = 'Elogio',
+  SUGGESTION = 'Sugestão',
+  ISSUE = 'Problema',
 }
 
 export enum FeedbackStatus {
-  UNREAD,
-  READ,
-  RESPONDED,
+  UNREAD = 'Não lido',
+  READ = 'Lido',
+  RESPONDED = 'Respondido',
 }
