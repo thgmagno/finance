@@ -1,16 +1,15 @@
 import { Group } from '@prisma/client'
 import { prisma } from '@/database/prisma'
 import { nanoid } from 'nanoid'
+import { handleDatabaseOperation } from '../helper'
 
 export async function create(
   group: Pick<Group, 'name' | 'creatorUserId' | 'description' | 'visibility'>,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     const tag = await generateUniqueTag()
     return await prisma.group.create({ data: { ...group, tag } })
-  } catch {
-    throw new Error('Não foi possível criar o grupo')
-  }
+  }, 'Grupo criado com sucesso')
 }
 
 export async function edit(
@@ -18,7 +17,7 @@ export async function edit(
   creatorUserId: string,
   groupId: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.group.updateMany({
       where: {
         id: groupId,
@@ -26,26 +25,22 @@ export async function edit(
       },
       data,
     })
-  } catch {
-    throw new Error('Não foi possível editar o grupo')
-  }
+  }, 'Grupo editado com sucesso')
 }
 
 export async function destroy(groupId: string, creatorUserId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.group.deleteMany({
       where: {
         id: groupId,
         creatorUserId,
       },
     })
-  } catch {
-    throw new Error('Não foi possível excluir o grupo')
-  }
+  }, 'Grupo excluído com sucesso')
 }
 
 export async function listMembers(groupId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupMember.findMany({
       where: { groupId },
       include: {
@@ -58,13 +53,11 @@ export async function listMembers(groupId: string) {
         },
       },
     })
-  } catch {
-    throw new Error('Não foi possível listar os membros do grupo')
-  }
+  }, 'Membros do grupo listados com sucesso')
 }
 
 export async function findUnique(searchTerm: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.group.findFirst({
       where: {
         visibility: 'PUBLIC',
@@ -74,9 +67,7 @@ export async function findUnique(searchTerm: string) {
         ],
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar o grupo')
-  }
+  }, 'Grupo encontrado com sucesso')
 }
 
 async function generateUniqueTag(): Promise<string> {

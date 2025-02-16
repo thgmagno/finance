@@ -1,5 +1,6 @@
 import { prisma } from '@/database/prisma'
 import { Transaction, Receipt } from '@prisma/client'
+import { handleDatabaseOperation } from '../helper'
 
 interface CreateReceipt {
   transaction: Omit<Transaction, 'id' | 'type'>
@@ -18,7 +19,7 @@ interface FindAllParameters {
 }
 
 export async function create(params: CreateReceipt) {
-  try {
+  return handleDatabaseOperation(async () => {
     const [transaction] = await prisma.$transaction([
       prisma.transaction.create({
         data: {
@@ -45,9 +46,7 @@ export async function create(params: CreateReceipt) {
       where: { id: transaction.id },
       data: { transactionId: transaction.id },
     })
-  } catch {
-    throw new Error('Não foi possível criar o recebimento')
-  }
+  }, 'Recebimento criado com sucesso')
 }
 
 export async function edit(
@@ -56,7 +55,7 @@ export async function edit(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.receipt.update({
       where: {
         id: receiptId,
@@ -64,9 +63,7 @@ export async function edit(
       },
       data,
     })
-  } catch {
-    throw new Error('Não foi possível editar o recebimento')
-  }
+  }, 'Recebimento editado com sucesso')
 }
 
 export async function confirm(
@@ -74,7 +71,7 @@ export async function confirm(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.receipt.update({
       where: {
         id: receiptId,
@@ -82,9 +79,7 @@ export async function confirm(
       },
       data: { status: 'RECEIVED' },
     })
-  } catch {
-    throw new Error('Não foi possível confirmar o recibo')
-  }
+  }, 'Recebimento confirmado com sucesso')
 }
 
 export async function cancel(
@@ -92,7 +87,7 @@ export async function cancel(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.receipt.update({
       where: {
         id: receiptId,
@@ -100,9 +95,7 @@ export async function cancel(
       },
       data: { status: 'CANCELLED' },
     })
-  } catch {
-    throw new Error('Não foi possível cancelar o recibo')
-  }
+  }, 'Recebimento cancelado com sucesso')
 }
 
 export async function findUnique(
@@ -110,20 +103,18 @@ export async function findUnique(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.receipt.findUnique({
       where: {
         id: receiptId,
         AND: { OR: [{ transaction: { userId, groupId } }] },
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar o recibo')
-  }
+  }, 'Recebimento encontrado com sucesso')
 }
 
 export async function findAll(params: FindAllParameters) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.transaction.findMany({
       where: {
         OR: [{ userId: params.userId }, { groupId: params.groupId }],
@@ -143,12 +134,10 @@ export async function findAll(params: FindAllParameters) {
         },
       },
       orderBy: {
-        [params.orderBy ?? 'description']: params.order ?? 'asc',
+        [params.orderBy]: params.order,
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar os recibos')
-  }
+  }, 'Busca realizada com sucesso')
 }
 
 export async function destroy(
@@ -156,10 +145,10 @@ export async function destroy(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     const receipt = await findUnique(receiptId, userId, groupId)
 
-    if (!receipt?.transactionId) {
+    if (!receipt?.data?.transactionId) {
       throw new Error('Recebimento não encontrado')
     }
 
@@ -171,10 +160,8 @@ export async function destroy(
         },
       }),
       prisma.transaction.delete({
-        where: { id: receipt.transactionId },
+        where: { id: receipt.data.transactionId },
       }),
     ])
-  } catch {
-    throw new Error('Não foi possível deletar o recebimento')
-  }
+  }, 'Recebimento deletado com sucesso')
 }

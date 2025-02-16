@@ -1,9 +1,10 @@
 import { prisma } from '@/database/prisma'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { handleDatabaseOperation } from '../helper'
 
 export async function deactivateAccount(userId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     await prisma.$transaction([
       prisma.category.deleteMany({ where: { userId } }),
       prisma.group.deleteMany({ where: { creatorUserId: userId } }),
@@ -15,22 +16,16 @@ export async function deactivateAccount(userId: string) {
       prisma.notification.deleteMany({ where: { userId } }),
       prisma.user.update({ where: { id: userId }, data: { active: false } }),
     ])
-  } catch {
-    throw new Error('Não foi possível desativar a conta')
-  }
+  }, 'Conta desativada com sucesso')
 }
 
 export async function signOut(userId: string) {
-  try {
-    await prisma.session.deleteMany({
-      where: { userId },
-    })
+  return handleDatabaseOperation(async () => {
+    await prisma.session.deleteMany({ where: { userId } })
 
     const cookieStore = await cookies()
-    cookieStore.delete('auth.session-token')
-  } catch {
-    throw new Error('Não foi possível sair da conta')
-  }
+    cookieStore.delete('authjs.session-token')
 
-  redirect('/entrar')
+    redirect('/entrar')
+  }, 'Desconectado com sucesso')
 }

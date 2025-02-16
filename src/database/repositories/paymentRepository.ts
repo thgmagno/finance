@@ -1,6 +1,6 @@
 import { prisma } from '@/database/prisma'
 import { Transaction, Payment } from '@prisma/client'
-import { Omit } from '@prisma/client/runtime/library'
+import { handleDatabaseOperation } from '../helper'
 
 interface CreatePayment {
   transaction: Omit<Transaction, 'id' | 'type'>
@@ -19,7 +19,7 @@ interface FindAllParameters {
 }
 
 export async function create(params: CreatePayment) {
-  try {
+  return handleDatabaseOperation(async () => {
     const [transaction] = await prisma.$transaction([
       prisma.transaction.create({
         data: {
@@ -46,9 +46,7 @@ export async function create(params: CreatePayment) {
       where: { id: transaction.id },
       data: { transactionId: transaction.id },
     })
-  } catch {
-    throw new Error('Não foi possível criar o pagamento')
-  }
+  }, 'Pagamento criado com sucesso')
 }
 
 export async function edit(
@@ -57,7 +55,7 @@ export async function edit(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.payment.update({
       where: {
         id: paymentId,
@@ -65,9 +63,7 @@ export async function edit(
       },
       data,
     })
-  } catch {
-    throw new Error('Não foi possível editar o pagamento')
-  }
+  }, 'Pagamento editado com sucesso')
 }
 
 export async function confirm(
@@ -75,7 +71,7 @@ export async function confirm(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.payment.update({
       where: {
         id: paymentId,
@@ -83,9 +79,7 @@ export async function confirm(
       },
       data: { status: 'PAID' },
     })
-  } catch {
-    throw new Error('Não foi possível confirmar o pagamento')
-  }
+  }, 'Pagamento confirmado com sucesso')
 }
 
 export async function cancel(
@@ -93,7 +87,7 @@ export async function cancel(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.payment.update({
       where: {
         id: paymentId,
@@ -101,9 +95,7 @@ export async function cancel(
       },
       data: { status: 'CANCELLED' },
     })
-  } catch {
-    throw new Error('Não foi possível cancelar o pagamento')
-  }
+  }, 'Pagamento cancelado com sucesso')
 }
 
 export async function findUnique(
@@ -111,20 +103,18 @@ export async function findUnique(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.payment.findUnique({
       where: {
         id: paymentId,
         AND: { OR: [{ transaction: { userId, groupId } }] },
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar o pagamento')
-  }
+  }, 'Pagamento encontrado com sucesso')
 }
 
 export async function findAll(params: FindAllParameters) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.transaction.findMany({
       where: {
         OR: [{ userId: params.userId }, { groupId: params.groupId }],
@@ -144,12 +134,10 @@ export async function findAll(params: FindAllParameters) {
         },
       },
       orderBy: {
-        [params.orderBy ?? 'description']: params.order ?? 'asc',
+        [params.orderBy]: params.order,
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar os pagamentos')
-  }
+  }, 'Busca realizada com sucesso')
 }
 
 export async function destroy(
@@ -157,10 +145,10 @@ export async function destroy(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     const payment = await findUnique(paymentId, userId, groupId)
 
-    if (!payment?.transactionId) {
+    if (!payment?.data?.transactionId) {
       throw new Error('Pagamento não encontrado')
     }
 
@@ -172,10 +160,8 @@ export async function destroy(
         },
       }),
       prisma.transaction.delete({
-        where: { id: payment.transactionId },
+        where: { id: payment.data.transactionId },
       }),
     ])
-  } catch {
-    throw new Error('Não foi possível deletar o pagamento')
-  }
+  }, 'Pagamento deletado com sucesso')
 }

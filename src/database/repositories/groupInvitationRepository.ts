@@ -1,46 +1,39 @@
 import { GroupInvitation, GroupInvitationStatus } from '@prisma/client'
 import { prisma } from '@/database/prisma'
+import { handleDatabaseOperation } from '../helper'
 
 export async function sendInvitation(invitation: GroupInvitation) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupInvitation.create({ data: invitation })
-  } catch {
-    throw new Error('Não foi possível enviar o convite')
-  }
+  }, 'Convite enviado com sucesso')
 }
 
 export async function acceptInvitation(invitationId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupInvitation.update({
       where: { id: invitationId },
       data: { status: 'ACCEPTED' },
     })
-  } catch {
-    throw new Error('Não foi possível aceitar o convite')
-  }
+  }, 'Convite aceito')
 }
 
 export async function declineInvitation(invitationId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupInvitation.update({
       where: { id: invitationId },
       data: { status: 'REJECTED' },
     })
-  } catch {
-    throw new Error('Não foi possível recusar o convite')
-  }
+  }, 'Convite recusado')
 }
 
 export async function findAll(
   groupId?: string,
   status?: GroupInvitationStatus,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupInvitation.findMany({
       where: { groupId, status },
       orderBy: { sendDate: 'desc' },
     })
-  } catch {
-    throw new Error('Não foi possível buscar os convites')
-  }
+  }, 'Busca realizada com sucesso')
 }

@@ -1,14 +1,13 @@
 import { RoleType } from '@prisma/client'
 import { prisma } from '@/database/prisma'
+import { handleDatabaseOperation } from '../helper'
 
 export async function removeMember(memberId: string, groupId?: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupMember.deleteMany({
       where: { id: memberId, groupId },
     })
-  } catch {
-    throw new Error('Não foi possível remover o membro')
-  }
+  }, 'Membro removido com sucesso')
 }
 
 export async function changeRole(
@@ -16,33 +15,27 @@ export async function changeRole(
   role: RoleType,
   groupId: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupMember.updateMany({
       where: { id: memberId, groupId },
       data: { role },
     })
-  } catch {
-    throw new Error('Não foi possível alterar o cargo do membro')
-  }
+  }, 'Cargo do membro alterado com sucesso')
 }
 
 export async function leaveGroup(userId: string, groupId?: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupMember.deleteMany({
       where: { userId, groupId },
     })
-  } catch {
-    throw new Error('Não foi possível sair do grupo')
-  }
+  }, 'Você saiu do grupo')
 }
 
 export async function findAll(userId: string, groupId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupMember.findMany({
       where: { groupId, userId },
       orderBy: { user: { name: 'asc' } },
     })
-  } catch {
-    throw new Error('Não foi possível buscar os membros')
-  }
+  }, 'Busca realizada com sucesso')
 }

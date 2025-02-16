@@ -1,5 +1,6 @@
 import { prisma } from '@/database/prisma'
 import { Reserve, Transaction } from '@prisma/client'
+import { handleDatabaseOperation } from '../helper'
 
 interface CreateReservation {
   transaction: Omit<Transaction, 'id' | 'type'>
@@ -21,7 +22,7 @@ interface FindAllParameters {
 }
 
 export async function create(params: CreateReservation) {
-  try {
+  return handleDatabaseOperation(async () => {
     const [transaction] = await prisma.$transaction([
       prisma.transaction.create({
         data: {
@@ -48,9 +49,7 @@ export async function create(params: CreateReservation) {
       where: { id: transaction.id },
       data: { transactionId: transaction.id },
     })
-  } catch {
-    throw new Error('Não foi possível criar a reserva')
-  }
+  }, 'Reserva criada com sucesso')
 }
 
 export async function edit(
@@ -59,17 +58,15 @@ export async function edit(
   userId?: string,
   groupId?: string,
 ) {
-  try {
-    return await prisma.reserve.update({
+  return handleDatabaseOperation(async () => {
+    return prisma.reserve.update({
       where: {
         id: reserveId,
         AND: [{ OR: [{ transaction: { userId, groupId } }] }],
       },
       data,
     })
-  } catch {
-    throw new Error('Não foi possível editar a reserva')
-  }
+  }, 'Reserva editada com sucesso')
 }
 
 export async function findUnique(
@@ -77,21 +74,19 @@ export async function findUnique(
   userId?: string,
   groupId?: string,
 ) {
-  try {
-    return await prisma.reserve.findUnique({
+  return handleDatabaseOperation(async () => {
+    return prisma.reserve.findUnique({
       where: {
         id: reserveId,
         AND: [{ OR: [{ transaction: { userId, groupId } }] }],
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar a reserva')
-  }
+  }, 'Reserva encontrada com sucesso')
 }
 
 export async function findAll(params: FindAllParameters) {
-  try {
-    return await prisma.transaction.findMany({
+  return handleDatabaseOperation(async () => {
+    return prisma.transaction.findMany({
       where: {
         OR: [{ userId: params.userId }, { groupId: params.groupId }],
         creationDate: {
@@ -121,9 +116,7 @@ export async function findAll(params: FindAllParameters) {
         [params.orderBy ?? 'description']: params.order ?? 'asc',
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar as reservas')
-  }
+  }, 'Reservas listadas com sucesso')
 }
 
 export async function destroy(
@@ -131,10 +124,10 @@ export async function destroy(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     const reserve = await findUnique(reserveId, userId, groupId)
 
-    if (!reserve?.transactionId) {
+    if (!reserve.data?.transactionId) {
       throw new Error('Reserva não encontrada')
     }
 
@@ -146,10 +139,8 @@ export async function destroy(
         },
       }),
       prisma.transaction.delete({
-        where: { id: reserve.transactionId },
+        where: { id: reserve.data.transactionId },
       }),
     ])
-  } catch {
-    throw new Error('Não foi possível deletar a reserva')
-  }
+  }, 'Reserva deletada com sucesso')
 }

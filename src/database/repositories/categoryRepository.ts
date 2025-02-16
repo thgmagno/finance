@@ -1,16 +1,15 @@
 import { Category, CategoryType } from '@prisma/client'
 import { prisma } from '@/database/prisma'
+import { handleDatabaseOperation } from '../helper'
 
 export async function create(category: Category) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.category.create({ data: category })
-  } catch {
-    throw new Error('Não foi possível criar a categoria')
-  }
+  }, 'Categoria criada com sucesso')
 }
 
 export async function edit(data: Partial<Category>) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.category.update({
       where: {
         id: data.id,
@@ -18,9 +17,7 @@ export async function edit(data: Partial<Category>) {
       },
       data,
     })
-  } catch {
-    throw new Error('Não foi possível editar a categoria')
-  }
+  }, 'Categoria editada com sucesso')
 }
 
 export async function destroy(
@@ -28,13 +25,11 @@ export async function destroy(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.category.delete({
       where: { id: categoryId, AND: { OR: [{ userId }, { groupId }] } },
     })
-  } catch {
-    throw new Error('Não foi possível deletar a categoria')
-  }
+  }, 'Categoria deletada com sucesso')
 }
 
 export async function findUnique(
@@ -42,13 +37,11 @@ export async function findUnique(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.category.findUnique({
       where: { id: categoryId, AND: { OR: [{ userId }, { groupId }] } },
     })
-  } catch {
-    throw new Error('Não foi possível buscar a categoria')
-  }
+  }, 'Busca realizada com sucesso')
 }
 
 export async function findAll(
@@ -56,7 +49,7 @@ export async function findAll(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.category.findMany({
       where: {
         type,
@@ -68,7 +61,5 @@ export async function findAll(
         name: 'asc',
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar as categorias')
-  }
+  }, 'Busca realizada com sucesso')
 }

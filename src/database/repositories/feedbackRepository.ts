@@ -1,40 +1,33 @@
 import { Feedback, FeedbackStatus } from '@prisma/client'
 import { prisma } from '@/database/prisma'
+import { handleDatabaseOperation } from '../helper'
 
 export async function send(feedback: Feedback) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.feedback.create({ data: feedback })
-  } catch {
-    throw new Error('Não foi possível enviar o feedback')
-  }
+  }, 'Feedback enviado com sucesso')
 }
 
 export async function changeStatus(feedbackId: string, status: FeedbackStatus) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.feedback.update({
       where: { id: feedbackId },
       data: { status },
     })
-  } catch {
-    throw new Error('Não foi possível alterar o status do feedback')
-  }
+  }, 'Status do feedback alterado')
 }
 
 export async function findUnique(feedbackId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.feedback.findUnique({ where: { id: feedbackId } })
-  } catch {
-    throw new Error('Não foi possível buscar o feedback')
-  }
+  }, 'Busca realizada com sucesso')
 }
 
 export async function findAll(status?: FeedbackStatus) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.feedback.findMany({
       where: { status },
       orderBy: { creationDate: 'desc' },
     })
-  } catch {
-    throw new Error('Não foi possível buscar os feedbacks')
-  }
+  }, 'Busca realizada com sucesso')
 }

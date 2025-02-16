@@ -1,34 +1,29 @@
 import { GroupJoinRequest, GroupJoinRequestStatus } from '@prisma/client'
 import { prisma } from '@/database/prisma'
+import { handleDatabaseOperation } from '../helper'
 
 export async function requestEntry(request: GroupJoinRequest) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupJoinRequest.create({ data: request })
-  } catch {
-    throw new Error('Não foi possível solicitar a entrada no grupo')
-  }
+  }, 'Sua solicitação de entrada no grupo foi criada com sucesso')
 }
 
 export async function approveRequest(requestId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupJoinRequest.update({
       where: { id: requestId },
       data: { status: 'APPROVED' },
     })
-  } catch {
-    throw new Error('Não foi possível aprovar a solicitação')
-  }
+  }, 'Solicitação aprovada')
 }
 
 export async function rejectRequest(requestId: string) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupJoinRequest.update({
       where: { id: requestId },
       data: { status: 'REJECTED' },
     })
-  } catch {
-    throw new Error('Não foi possível rejeitar a solicitação')
-  }
+  }, 'Solicitação rejeitada')
 }
 
 export async function findAll(
@@ -36,7 +31,7 @@ export async function findAll(
   userId?: string,
   groupId?: string,
 ) {
-  try {
+  return handleDatabaseOperation(async () => {
     return await prisma.groupJoinRequest.findMany({
       where: {
         groupId,
@@ -47,7 +42,5 @@ export async function findAll(
         requestDate: 'desc',
       },
     })
-  } catch {
-    throw new Error('Não foi possível buscar as solicitações')
-  }
+  }, 'Busca realizada com sucesso')
 }
