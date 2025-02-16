@@ -1,4 +1,4 @@
-import { GroupJoinRequestDTO } from '../dtos/GroupJoinRequestDTO'
+import { GroupJoinRequestDTO } from '@/database/dtos/GroupJoinRequestDTO'
 import { IGroupJoinRequestService } from '../interfaces/IGroupJoinRequestService'
 import { GroupJoinRequestRepository } from '../repositories/GroupJoinRequestRepository'
 

@@ -1,4 +1,4 @@
-import { ReceiptDTO } from '../dtos/ReceiptDTO'
+import { ReceiptDTO } from '@/database/dtos/ReceiptDTO'
 import { IReceiptService } from '../interfaces/IReceiptService'
 import { ReceiptRepository } from '../repositories/ReceiptRepository'
 

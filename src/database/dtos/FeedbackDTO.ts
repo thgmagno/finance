@@ -1,4 +1,4 @@
-import { FeedbackStatus, FeedbackType } from '../enums/users'
+import { FeedbackStatus, FeedbackType } from '@/database/enums/users'
 
 export class FeedbackDTO {
   constructor(

@@ -1,4 +1,4 @@
-import { GroupInvitationStatus } from '../enums/groups'
+import { GroupInvitationStatus } from '@/database/enums/groups'
 
 export class GroupInvitationDTO {
   constructor(

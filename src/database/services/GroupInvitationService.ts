@@ -1,4 +1,4 @@
-import { GroupInvitationDTO } from '../dtos/GroupInvitationDTO'
+import { GroupInvitationDTO } from '@/database/dtos/GroupInvitationDTO'
 import { IGroupInvitationService } from '../interfaces/IGroupInvitationService'
 import { GroupInvitationRepository } from '../repositories/GroupInvitationRepository'
 

@@ -1,4 +1,4 @@
-import { TransactionType } from '../enums/transactions'
+import { TransactionType } from '@/database/enums/transactions'
 
 export class TransactionDTO {
   constructor(

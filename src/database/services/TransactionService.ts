@@ -1,4 +1,4 @@
-import { TransactionDTO } from '../dtos/TransactionDTO'
+import { TransactionDTO } from '@/database/dtos/TransactionDTO'
 import { ITransactionService } from '../interfaces/ITransactionService'
 import { TransactionRepository } from '../repositories/TransactionRepository'
 

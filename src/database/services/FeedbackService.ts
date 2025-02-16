@@ -1,4 +1,4 @@
-import { FeedbackDTO } from '../dtos/FeedbackDTO'
+import { FeedbackDTO } from '@/database/dtos/FeedbackDTO'
 import { IFeedbackService } from '../interfaces/IFeedbackService'
 import { FeedbackRepository } from '../repositories/FeedbackRepository'
 

@@ -1,4 +1,4 @@
-import { GroupJoinRequestDTO } from '../dtos/GroupJoinRequestDTO'
+import { GroupJoinRequestDTO } from '@/database/dtos/GroupJoinRequestDTO'
 
 export class GroupJoinRequestRepository {
   private groupJoinRequests: GroupJoinRequestDTO[] = []

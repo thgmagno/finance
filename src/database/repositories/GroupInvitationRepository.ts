@@ -1,4 +1,4 @@
-import { GroupInvitationDTO } from '../dtos/GroupInvitationDTO'
+import { GroupInvitationDTO } from '@/database/dtos/GroupInvitationDTO'
 
 export class GroupInvitationRepository {
   private groupInvitations: GroupInvitationDTO[] = []

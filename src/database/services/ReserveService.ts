@@ -1,4 +1,4 @@
-import { ReserveDTO } from '../dtos/ReserveDTO'
+import { ReserveDTO } from '@/database/dtos/ReserveDTO'
 import { IReserveService } from '../interfaces/IReserveService'
 import { ReserveRepository } from '../repositories/ReserveRepository'
 

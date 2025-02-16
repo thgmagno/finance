@@ -1,4 +1,4 @@
-import { GroupDTO } from '../dtos/GroupDTO'
+import { GroupDTO } from '@/database/dtos/GroupDTO'
 import { IGroupService } from '../interfaces/IGroupService'
 import { GroupRepository } from '../repositories/GroupRepository'
 

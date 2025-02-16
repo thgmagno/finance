@@ -1,4 +1,4 @@
-import { CategoryType } from '../enums/categories'
+import { CategoryType } from '@/database/enums/categories'
 
 export class CategoryDTO {
   constructor(

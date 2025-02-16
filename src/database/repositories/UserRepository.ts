@@ -1,4 +1,4 @@
-import { UserDTO } from '../dtos/UserDTO'
+import { UserDTO } from '@/database/dtos/UserDTO'
 
 export class UserRepository {
   private users: UserDTO[] = []

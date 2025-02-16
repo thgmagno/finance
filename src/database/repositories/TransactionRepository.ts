@@ -1,4 +1,4 @@
-import { TransactionDTO } from '../dtos/TransactionDTO'
+import { TransactionDTO } from '@/database/dtos/TransactionDTO'
 
 export class TransactionRepository {
   private transactions: TransactionDTO[] = []

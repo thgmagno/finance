@@ -1,4 +1,4 @@
-import { FeedbackDTO } from '../dtos/FeedbackDTO'
+import { FeedbackDTO } from '@/database/dtos/FeedbackDTO'
 
 export class FeedbackRepository {
   private feedbacks: FeedbackDTO[] = []

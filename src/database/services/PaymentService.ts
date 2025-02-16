@@ -1,4 +1,4 @@
-import { PaymentDTO } from '../dtos/PaymentDTO'
+import { PaymentDTO } from '@/database/dtos/PaymentDTO'
 import { IPaymentService } from '../interfaces/IPaymentService'
 import { PaymentRepository } from '../repositories/PaymentRepository'
 

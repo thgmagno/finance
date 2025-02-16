@@ -1,4 +1,4 @@
-import { GroupDTO } from '../dtos/GroupDTO'
+import { GroupDTO } from '@/database/dtos/GroupDTO'
 
 export class GroupRepository {
   private groups: GroupDTO[] = []

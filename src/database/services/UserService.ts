@@ -1,4 +1,4 @@
-import { UserDTO } from '../dtos/UserDTO'
+import { UserDTO } from '@/database/dtos/UserDTO'
 import { IUserService } from '../interfaces/IUserService'
 import { UserRepository } from '../repositories/UserRepository'
 

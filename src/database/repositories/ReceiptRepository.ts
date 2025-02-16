@@ -1,4 +1,4 @@
-import { ReceiptDTO } from '../dtos/ReceiptDTO'
+import { ReceiptDTO } from '@/database/dtos/ReceiptDTO'
 
 export class ReceiptRepository {
   private receipts: ReceiptDTO[] = []

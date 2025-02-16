@@ -1,4 +1,4 @@
-import { ReserveDTO } from '../dtos/ReserveDTO'
+import { ReserveDTO } from '@/database/dtos/ReserveDTO'
 
 export class ReserveRepository {
   private reserves: ReserveDTO[] = []
