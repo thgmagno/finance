@@ -1,7 +1,7 @@
 import { Group } from '@prisma/client'
 import { prisma } from '@/database/prisma'
 import { nanoid } from 'nanoid'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function create(
   group: Pick<Group, 'name' | 'creatorUserId' | 'description' | 'visibility'>,

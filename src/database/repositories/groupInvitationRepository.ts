@@ -1,6 +1,6 @@
 import { GroupInvitation, GroupInvitationStatus } from '@prisma/client'
 import { prisma } from '@/database/prisma'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function sendInvitation(invitation: GroupInvitation) {
   return handleDatabaseOperation(async () => {

@@ -1,7 +1,7 @@
 import { prisma } from '@/database/prisma'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function deactivateAccount(userId: string) {
   return handleDatabaseOperation(async () => {

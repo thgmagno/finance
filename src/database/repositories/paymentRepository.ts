@@ -1,6 +1,6 @@
 import { prisma } from '@/database/prisma'
 import { Transaction, Payment } from '@prisma/client'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 interface CreatePayment {
   transaction: Omit<Transaction, 'id' | 'type'>

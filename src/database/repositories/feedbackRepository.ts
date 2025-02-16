@@ -1,6 +1,6 @@
 import { Feedback, FeedbackStatus } from '@prisma/client'
 import { prisma } from '@/database/prisma'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function send(feedback: Feedback) {
   return handleDatabaseOperation(async () => {

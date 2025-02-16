@@ -1,6 +1,6 @@
 import { RoleType } from '@prisma/client'
 import { prisma } from '@/database/prisma'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function removeMember(memberId: string, groupId?: string) {
   return handleDatabaseOperation(async () => {

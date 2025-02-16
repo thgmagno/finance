@@ -1,6 +1,6 @@
 import { Category, CategoryType } from '@prisma/client'
 import { prisma } from '@/database/prisma'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function create(category: Category) {
   return handleDatabaseOperation(async () => {

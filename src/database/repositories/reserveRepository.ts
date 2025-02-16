@@ -1,6 +1,6 @@
 import { prisma } from '@/database/prisma'
 import { Reserve, Transaction } from '@prisma/client'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 interface CreateReservation {
   transaction: Omit<Transaction, 'id' | 'type'>

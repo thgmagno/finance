@@ -1,6 +1,6 @@
 import { GroupJoinRequest, GroupJoinRequestStatus } from '@prisma/client'
 import { prisma } from '@/database/prisma'
-import { handleDatabaseOperation } from '../helper'
+import { handleDatabaseOperation } from '@/database/helper'
 
 export async function requestEntry(request: GroupJoinRequest) {
   return handleDatabaseOperation(async () => {
