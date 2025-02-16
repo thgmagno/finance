@@ -1,4 +1,10 @@
 import { prisma } from '@/database/prisma'
+import { Transaction, Receipt } from '@prisma/client'
+
+interface CreateReceipt {
+  transaction: Omit<Transaction, 'id' | 'type'>
+  receipt: Omit<Receipt, 'id' | 'transactionId' | 'transaction'>
+}
 
 interface FindAllParameters {
   orderBy: 'description' | 'creationDate' | 'amount'
@@ -9,6 +15,58 @@ interface FindAllParameters {
   receiptDateTo?: Date
   userId?: string
   groupId?: string
+}
+
+export async function create(params: CreateReceipt) {
+  try {
+    const [transaction] = await prisma.$transaction([
+      prisma.transaction.create({
+        data: {
+          type: 'RECEIPT',
+          amount: params.transaction.amount ?? 0,
+          categoryId: params.transaction.categoryId,
+          description: params.transaction.description ?? '-',
+          groupId: params.transaction.groupId,
+          userId: params.transaction.userId,
+        },
+      }),
+      prisma.receipt.create({
+        data: {
+          receiptDate: params.receipt.receiptDate,
+          amountReceived: params.receipt.amountReceived,
+          status: params.receipt.status,
+          receiptMethod: params.receipt.receiptMethod,
+          transactionId: undefined,
+        },
+      }),
+    ])
+
+    await prisma.receipt.update({
+      where: { id: transaction.id },
+      data: { transactionId: transaction.id },
+    })
+  } catch {
+    throw new Error('Não foi possível criar o recebimento')
+  }
+}
+
+export async function edit(
+  receiptId: string,
+  data: Partial<Receipt>,
+  userId?: string,
+  groupId?: string,
+) {
+  try {
+    return await prisma.receipt.update({
+      where: {
+        id: receiptId,
+        AND: [{ OR: [{ transaction: { userId, groupId } }] }],
+      },
+      data,
+    })
+  } catch {
+    throw new Error('Não foi possível editar o recebimento')
+  }
 }
 
 export async function confirm(
@@ -90,5 +148,33 @@ export async function findAll(params: FindAllParameters) {
     })
   } catch {
     throw new Error('Não foi possível buscar os recibos')
+  }
+}
+
+export async function destroy(
+  receiptId: string,
+  userId?: string,
+  groupId?: string,
+) {
+  try {
+    const receipt = await findUnique(receiptId, userId, groupId)
+
+    if (!receipt?.transactionId) {
+      throw new Error('Recebimento não encontrado')
+    }
+
+    return prisma.$transaction([
+      prisma.receipt.delete({
+        where: {
+          id: receiptId,
+          AND: [{ OR: [{ transaction: { userId, groupId } }] }],
+        },
+      }),
+      prisma.transaction.delete({
+        where: { id: receipt.transactionId },
+      }),
+    ])
+  } catch {
+    throw new Error('Não foi possível deletar o recebimento')
   }
 }
