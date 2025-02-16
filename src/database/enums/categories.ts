@@ -1,5 +1,5 @@
 export enum CategoryType {
-  reservation = 'Reserva',
-  payment = 'Pagamento',
-  receipt = 'Recebimento',
+  RESERVATION = 'Reserva',
+  PAYMENT = 'Pagamento',
+  RECEIPT = 'Recebimento',
 }

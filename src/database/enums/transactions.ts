@@ -1,10 +1,10 @@
 export enum TransactionType {
-  reservation = 'Reserva',
-  payment = 'Pagamento',
-  receipt = 'Recebimento',
+  RESERVATION = 'Reserva',
+  PAYMENT = 'Pagamento',
+  RECEIPT = 'Recebimento',
 }
 
-export enum PaymentType {
+export enum PaymentMethodType {
   CARTAO = 'Cartão',
   DINHEIRO = 'Dinheiro',
   TRANSFERENCIA = 'Transferência',
@@ -14,7 +14,7 @@ export enum PaymentType {
   OUTROS = 'Outros',
 }
 
-export enum ReceiptType {
+export enum ReceiptMethodType {
   SALARIO = 'Salário',
   VENDA = 'Venda',
   EXTRA = 'Extra',

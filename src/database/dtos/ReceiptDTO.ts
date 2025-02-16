@@ -1,9 +1,12 @@
+import { ReceiptMethodType } from '@/database/enums/transactions'
+
 export class ReceiptDTO {
   constructor(
     private readonly id: string,
     private readonly transactionId: string,
     private readonly receiptDate: Date,
     private readonly amountReceived: number,
+    private readonly receiptMethod: ReceiptMethodType,
   ) {}
 
   getId(): string {
@@ -20,5 +23,9 @@ export class ReceiptDTO {
 
   getAmountReceived(): number {
     return this.amountReceived
+  }
+
+  getReceiptMethod(): ReceiptMethodType {
+    return this.receiptMethod
   }
 }

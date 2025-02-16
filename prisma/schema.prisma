@@ -8,18 +8,35 @@ generator client {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
+  password      String?
+  active        Boolean   @default(true)
+  creationDate  DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deleted       Boolean   @default(false)
+  deletedAt     DateTime?
+
+  // Relacionamentos do NextAuth
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Relacionamentos de feedback e grupos
+  feedbacks    Feedback[]
+  groups       GroupMember[]
+  invitations  GroupInvitation[]
+  joinRequests GroupJoinRequest[]
+
+  // Campos adicionais
+  createdAt   DateTime      @default(now())
+  Transaction Transaction[]
+  Group       Group[]
+
+  @@map("users")
 }
 
 model Account {
@@ -75,4 +92,206 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Transaction {
+  id           String          @id @default(cuid())
+  userId       String
+  categoryId   String
+  amount       Decimal
+  creationDate DateTime
+  description  String
+  type         TransactionType
+  payments     Payment[]
+  receipts     Receipt[]
+  reserves     Reserve[]
+  deleted      Boolean         @default(false)
+  deletedAt    DateTime?
+  user         User            @relation(fields: [userId], references: [id])
+  category     Category        @relation(fields: [categoryId], references: [id])
+
+  @@map("transactions")
+}
+
+model Payment {
+  id            String            @id @default(cuid())
+  transactionId String
+  dueDate       DateTime
+  amountPaid    Decimal
+  paymentMethod PaymentMethodType
+  transaction   Transaction       @relation(fields: [transactionId], references: [id])
+
+  @@map("payments")
+}
+
+model Receipt {
+  id             String            @id @default(cuid())
+  transactionId  String
+  receiptDate    DateTime
+  amountReceived Decimal
+  receiptMethod  ReceiptMethodType
+  transaction    Transaction       @relation(fields: [transactionId], references: [id])
+
+  @@map("receipts")
+}
+
+model Reserve {
+  id            String      @id @default(cuid())
+  transactionId String
+  startDate     DateTime
+  endDate       DateTime
+  yield         Decimal
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("reserves")
+}
+
+model Group {
+  id            String             @id @default(cuid())
+  creatorUserId String
+  name          String
+  description   String
+  creationDate  DateTime
+  creator       User               @relation(fields: [creatorUserId], references: [id])
+  members       GroupMember[]
+  invitations   GroupInvitation[]
+  joinRequests  GroupJoinRequest[]
+  deleted       Boolean            @default(false)
+  deletedAt     DateTime?
+
+  @@map("groups")
+}
+
+model GroupMember {
+  id           String   @id @default(cuid())
+  userId       String
+  groupId      String
+  roleId       String
+  additionDate DateTime
+  user         User     @relation(fields: [userId], references: [id])
+  group        Group    @relation(fields: [groupId], references: [id])
+  role         Role     @relation(fields: [roleId], references: [id])
+
+  @@map("group_members")
+}
+
+model GroupInvitation {
+  id         String                @id @default(cuid())
+  groupId    String
+  userId     String
+  sendDate   DateTime
+  acceptDate DateTime?
+  status     GroupInvitationStatus
+  group      Group                 @relation(fields: [groupId], references: [id])
+  user       User                  @relation(fields: [userId], references: [id])
+
+  @@map("group_invitations")
+}
+
+model GroupJoinRequest {
+  id           String                 @id @default(cuid())
+  groupId      String
+  userId       String
+  requestDate  DateTime
+  responseDate DateTime?
+  status       GroupJoinRequestStatus
+  group        Group                  @relation(fields: [groupId], references: [id])
+  user         User                   @relation(fields: [userId], references: [id])
+
+  @@map("group_join_requests")
+}
+
+model Category {
+  id           String        @id @default(cuid())
+  name         String
+  type         CategoryType
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Feedback {
+  id           String         @id @default(cuid())
+  userId       String
+  message      String
+  creationDate DateTime
+  type         FeedbackType
+  status       FeedbackStatus
+  user         User           @relation(fields: [userId], references: [id])
+
+  @@map("feedbacks")
+}
+
+model Role {
+  id      String        @id @default(cuid())
+  name    String
+  members GroupMember[]
+
+  @@map("roles")
+}
+
+model SoftDelete {
+  id        String    @id @default(cuid())
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
+
+  @@map("soft_deletes")
+}
+
+enum CategoryType {
+  RESERVATION
+  PAYMENT
+  RECEIPT
+}
+
+enum GroupJoinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum GroupInvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum TransactionType {
+  RESERVATION
+  PAYMENT
+  RECEIPT
+}
+
+enum PaymentMethodType {
+  CARTAO
+  DINHEIRO
+  TRANSFERENCIA
+  PIX
+  BOLETO
+  CHEQUE
+  OUTROS
+}
+
+enum ReceiptMethodType {
+  SALARIO
+  VENDA
+  EXTRA
+  TICKET
+  INVESTIMENTO
+  DIVIDENDO
+  REEMBOLSO
+  OUTROS
+}
+
+enum FeedbackType {
+  PRAISE
+  SUGGESTION
+  ISSUE
+}
+
+enum FeedbackStatus {
+  UNREAD
+  READ
+  RESPONDED
 }
