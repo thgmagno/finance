@@ -71,19 +71,25 @@ export async function findUnique(searchTerm: string) {
 }
 
 async function generateUniqueTag(): Promise<string> {
-  let tagUnica = ''
-  let tagExiste = true
+  let tagUnica = '';
+  let tagExiste = true;
 
   while (tagExiste) {
-    tagUnica = nanoid(4)
-      .replace(/[^A-Z0-9]/g, '')
-      .toUpperCase()
+    while (tagUnica.length < 4) {
+      tagUnica = nanoid(4)
+        .replace(/[^A-Z0-9]/g, '')
+        .toUpperCase();
+    }
+
     const tagExistente = await prisma.group.findUnique({
       where: { tag: tagUnica },
-    })
+    });
 
-    tagExiste = !!tagExistente
+    tagExiste = !!tagExistente;
+    if (tagExiste) {
+      tagUnica = '';
+    }
   }
 
-  return tagUnica
+  return tagUnica;
 }
