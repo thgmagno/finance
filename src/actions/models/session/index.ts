@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 
-type GetServerSessionReturn<T> = T extends 'id' | 'email' | 'name'
+type GetServerSessionReturn<T = undefined> = T extends 'id' | 'email' | 'name'
   ? string
   : {
       id: string
@@ -11,7 +11,7 @@ type GetServerSessionReturn<T> = T extends 'id' | 'email' | 'name'
     }
 
 export async function getServerSession<
-  T extends 'id' | 'email' | 'name' | undefined,
+  T extends 'id' | 'email' | 'name' | undefined = undefined,
 >(get?: T): Promise<GetServerSessionReturn<T>> {
   const user = await auth().then((res) => res?.user)
 

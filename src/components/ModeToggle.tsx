@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from './ui/skeleton'
 
 export function ModeToggle() {
   const { setTheme } = useTheme()
@@ -48,10 +49,24 @@ export function ModeToggle() {
 }
 
 export function ModeSelect() {
+  const [mounted, setMounted] = React.useState(false)
   const { setTheme, theme } = useTheme()
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleThemeChange = (value: string) => {
     setTheme(value)
+  }
+
+  if (!mounted) {
+    return (
+      <div className="flex flex-col space-y-1.5">
+        <Label htmlFor="tema">Tema</Label>
+        <Skeleton className="h-9 max-w-[350px]" />
+      </div>
+    )
   }
 
   return (

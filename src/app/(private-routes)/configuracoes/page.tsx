@@ -4,7 +4,7 @@ import { ModeSelect } from '@/components/ModeToggle'
 
 export default async function SettingsPage() {
   return (
-    <Page title="Configurações">
+    <Page>
       <ModeSelect />
       <UserInfo />
     </Page>
