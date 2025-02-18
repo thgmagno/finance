@@ -22,21 +22,20 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { MessageFeedback } from './MessageFeedback'
+import { usePathname } from 'next/navigation'
 
-interface CreateTransactionProps {
-  type: 'payment' | 'receipt' | 'reserve'
-}
+export function CreateTransaction() {
+  const pathname = usePathname()
 
-export function CreateTransaction({ type }: CreateTransactionProps) {
-  if (type === 'payment') {
+  if (pathname.includes('/pagamentos/adicionar')) {
     return <CreatePaymentForm />
   }
 
-  if (type === 'receipt') {
+  if (pathname.includes('/recebimentos/adicionar')) {
     return <CreateReceiptForm />
   }
 
-  if (type === 'reserve') {
+  if (pathname.includes('/reservas/adicionar')) {
     return <CreateReserveForm />
   }
 }
@@ -122,7 +121,7 @@ function CreatePaymentForm() {
 function CreateReceiptForm() {
   const [formState, action, isPending] = useActionState(
     actions.transactions.receipt.create,
-    undefined,
+    { errors: {} },
   )
 
   return (
@@ -187,7 +186,7 @@ function CreateReceiptForm() {
 function CreateReserveForm() {
   const [formState, action, isPending] = useActionState(
     actions.transactions.reserve.create,
-    undefined,
+    { errors: {} },
   )
 
   return (

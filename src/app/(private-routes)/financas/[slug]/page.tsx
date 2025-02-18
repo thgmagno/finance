@@ -2,37 +2,33 @@ import { AddButton } from '@/components/common/AddButton'
 import { Page } from '@/components/common/Page'
 import { redirect } from 'next/navigation'
 
+const slugConfig = {
+  pagamentos: {
+    addHref: '/financas/pagamentos/adicionar',
+  },
+  recebimentos: {
+    addHref: '/financas/recebimentos/adicionar',
+  },
+  reservas: {
+    addHref: '/financas/reservas/adicionar',
+  },
+}
+
+type SlugType = keyof typeof slugConfig
+
 export default async function FinanceSlugPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: SlugType }>
 }) {
   const slug = (await params).slug
-  const allowedSlugs = ['pagamentos', 'recebimentos', 'reservas']
+  const config = slugConfig[slug]
 
-  if (!allowedSlugs.includes(slug)) redirect('/financas')
+  if (!config) redirect('/financas')
 
-  if (slug === 'pagamentos') {
-    return (
-      <Page>
-        <AddButton href="/financas/pagamentos/adicionar" label="Adicionar" />
-      </Page>
-    )
-  }
-
-  if (slug === 'recebimentos') {
-    return (
-      <Page>
-        <AddButton href="/financas/recebimentos/adicionar" label="Adicionar" />
-      </Page>
-    )
-  }
-
-  if (slug === 'reservas') {
-    return (
-      <Page>
-        <AddButton href="/financas/reservas/adicionar" label="Adicionar" />
-      </Page>
-    )
-  }
+  return (
+    <Page>
+      <AddButton href={config.addHref} label="Adicionar" />
+    </Page>
+  )
 }
